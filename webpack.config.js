@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: "development",
-  entry: './src/index.ts',
+  entry: './src/app/main.ts',
   devtool: "source-map",
   module: {
     rules: [
@@ -29,7 +29,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Output Management',
+      title: 'Mobile Roboter - BTM3830',
+      template: './src/assets/index.html'
     }),
   ],
   output: {
@@ -37,5 +38,3 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   }
 };
-
-
