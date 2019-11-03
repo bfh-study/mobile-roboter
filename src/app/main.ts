@@ -1,3 +1,3 @@
-let test: number = 12;
+import { Stage } from './view/stage';
 
-console.log(test);
+new Stage(50, 30).draw();
