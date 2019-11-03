@@ -1,3 +1,4 @@
-import { Stage } from './view/stage';
+import { createStateMachine } from './view';
 
-new Stage(50, 30).draw();
+const stateMachine = createStateMachine(50, 30);
+stateMachine.start();

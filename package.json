@@ -29,6 +29,7 @@
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
-    "@svgdotjs/svg.js": "^3.0.14"
+    "@svgdotjs/svg.js": "^3.0.14",
+    "xstate": "^4.6.7"
   }
 }
