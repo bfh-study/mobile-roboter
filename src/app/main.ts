@@ -1,4 +1,6 @@
 import { createStateMachine } from './view';
 
-const stateMachine = createStateMachine(50, 30);
+import '../assets/sass/style.scss'
+
+const stateMachine = createStateMachine(40, 25);
 stateMachine.start();
