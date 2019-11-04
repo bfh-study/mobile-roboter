@@ -1,6 +1,7 @@
 import { Machine, interpret, Interpreter } from 'xstate';
 
 import { Stage } from './stage';
+import { ControlPanel } from './panel';
 
 interface Context {
     init(): void;
@@ -8,9 +9,11 @@ interface Context {
 
 class Controller {
     private stage: Stage;
+    private panel: ControlPanel;
 
     constructor(numCols: number, numRows: number) {
         this.stage = new Stage(numCols, numRows);
+        this.panel = new ControlPanel();
     }
 
     init(): void {

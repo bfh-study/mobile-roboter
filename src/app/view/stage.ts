@@ -1,4 +1,4 @@
-import {SVG, G} from '@svgdotjs/svg.js'
+import { SVG } from '@svgdotjs/svg.js'
 
 export class Stage {
 
