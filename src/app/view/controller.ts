@@ -24,11 +24,11 @@ interface StateSchema {
     };
 }
 
-type Event =
+type SMEvent =
   | { type: 'INIT' }
 
-export function createStateMachine(numCols: number, numRows: number): Interpreter<Context, StateSchema, Event> {
-    let machine = Machine<Context, StateSchema, Event>(
+export function createStateMachine(numCols: number, numRows: number): Interpreter<Context, StateSchema, SMEvent> {
+    let machine = Machine<Context, StateSchema, SMEvent>(
         {
             id: 'main',
             initial: 'initial',
