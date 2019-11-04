@@ -2,7 +2,7 @@ import { Machine, interpret, Interpreter } from 'xstate';
 
 import { Stage } from './stage';
 import { ControlPanel } from './panel';
-import * as strgBtn from './strategy.button';
+import * as strgBtn from './strategies/button';
 import { Context, StateSchema, SMEvent } from './statemachine';
 
 class Controller {

@@ -1,4 +1,4 @@
-import { ButtonStrategy } from "./strategy.button";
+import { ButtonStrategy } from './strategies/button';
 
 export enum ControlPanelButtons {
     START = 'start',

@@ -1,7 +1,7 @@
 import { Interpreter } from 'xstate';
 
-import { Context, StateSchema, SMEvent, ReadyEvent, StartEvent, PauseEvent, StopEvent } from './statemachine';
-import { ControlPanel, ControlPanelButtons } from './panel';
+import { Context, StateSchema, SMEvent, ReadyEvent, StartEvent, PauseEvent, StopEvent } from '../statemachine';
+import { ControlPanel, ControlPanelButtons } from '../panel';
 
 export interface ButtonStrategy {
     onStartButtonClick(): void;
