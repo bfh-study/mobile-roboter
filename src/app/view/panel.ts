@@ -1,3 +1,5 @@
+import { ButtonStrategy } from "./strategy.button";
+
 export enum ControlPanelButtons {
     START = 'start',
     PAUSE = 'pause'
@@ -10,27 +12,45 @@ export class ControlPanel {
     private startStopButton: HTMLButtonElement;
     private pauseButton: HTMLButtonElement;
 
-    constructor() {
-        this.init();
-    }
+    private _buttonStrategy: ButtonStrategy
 
-    private init(): void {
+    init(): void {
         this.startStopButton = <HTMLButtonElement> document.getElementById(ControlPanelButtons.START);
+        this.startStopButton.addEventListener('click', function (el: HTMLButtonElement, ev: MouseEvent) {
+            if (this._buttonStrategy != null) {
+                this._buttonStrategy.onStartButtonClick();
+            }
+        }.bind(this));
         this.pauseButton = <HTMLButtonElement> document.getElementById(ControlPanelButtons.PAUSE);
+        this.pauseButton.addEventListener('click', function (el: HTMLButtonElement, ev: MouseEvent) {
+            if (this._buttonStrategy != null) {
+                this._buttonStrategy.onPauseButtonClick();
+            }
+        }.bind(this));
+        this.pauseButton.disabled = true;
     }
 
-    toggleButton(btn: ControlPanelButtons) :void {
-        let button: HTMLButtonElement;
+    set buttonStrategy(val: ButtonStrategy) {
+        this._buttonStrategy = val;
+    }
+
+    changeText(btn: ControlPanelButtons, newText: string): void {
+        this.getButton(btn).textContent = newText;
+    }
+
+    toggleButton(btn: ControlPanelButtons): void {
+        let button = this.getButton(btn);
+        button.disabled = !button.disabled;
+    }
+
+    private getButton(btn: ControlPanelButtons): HTMLButtonElement {
         switch (btn) {
             case ControlPanelButtons.START:
-                button = this.startStopButton;
-                break;
+                return this.startStopButton;
             case ControlPanelButtons.PAUSE:
-                button = this.pauseButton;
-                break;
+                return this.pauseButton;
             default:
-                return;
+                return new HTMLButtonElement();
         }
-        button.disabled = !button.disabled;
     }
 }
