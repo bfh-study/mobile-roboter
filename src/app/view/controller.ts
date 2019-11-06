@@ -4,14 +4,17 @@ import { Stage } from './stage';
 import { ControlPanel } from './panel';
 import { strgBtn, strgMouse } from './strategies';
 import { Context, StateSchema, SMEvent } from './statemachine';
+import { Grid } from '../util/grid';
 
 class Controller {
     private _interpreter: Interpreter<Context, StateSchema, SMEvent>;
 
+    private grid: Grid;
     private stage: Stage;
     private panel: ControlPanel;
 
     constructor(numCols: number, numRows: number) {
+        this.grid = new Grid(numCols, numRows);
         this.stage = new Stage(numCols, numRows);
         this.panel = new ControlPanel();
     }
@@ -21,19 +24,21 @@ class Controller {
     }
 
     init(): void {
+        
         this.panel.init();
+        this.grid.init();
         this.stage.draw();
         this._interpreter.send('READY');
     }
 
     ready(): void {
         this.panel.buttonStrategy = new strgBtn.ReadyButtonState(this._interpreter, this.panel);
-        this.stage.mouseStrategy = new strgMouse.EditMouseState(this.stage);
+        this.stage.mouseStrategy = new strgMouse.EditMouseState(this.stage, this.grid);
     }
 
     start(): void {
         this.panel.buttonStrategy = new strgBtn.StartedButtonState(this._interpreter, this.panel);
-        this.stage.mouseStrategy = new strgMouse.NoActionState(this.stage);
+        this.stage.mouseStrategy = new strgMouse.NoActionState(this.stage, this.grid);
     }
 
     pause(): void {
