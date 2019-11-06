@@ -2,7 +2,7 @@ import { Machine, interpret, Interpreter } from 'xstate';
 
 import { Stage } from './stage';
 import { ControlPanel } from './panel';
-import * as strgBtn from './strategies/button';
+import { strgBtn, strgMouse } from './strategies';
 import { Context, StateSchema, SMEvent } from './statemachine';
 
 class Controller {
@@ -28,10 +28,12 @@ class Controller {
 
     ready(): void {
         this.panel.buttonStrategy = new strgBtn.ReadyButtonState(this._interpreter, this.panel);
+        this.stage.mouseStrategy = new strgMouse.EditMouseState(this.stage);
     }
 
     start(): void {
         this.panel.buttonStrategy = new strgBtn.StartedButtonState(this._interpreter, this.panel);
+        this.stage.mouseStrategy = new strgMouse.NoActionState(this.stage);
     }
 
     pause(): void {
