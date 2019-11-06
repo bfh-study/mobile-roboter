@@ -5,6 +5,16 @@ export class Node {
     private _isStop: boolean;
     private _isClear: boolean;
 
+    set isStart(val: boolean) {
+        this._isClear = false;
+        this._isStart = val;
+    }
+
+    set isStop(val: boolean) {
+        this._isClear = false;
+        this._isStop = val;
+    }
+
     set isClear(val: boolean) {
         this._isClear = val;
         this._isStart = false;
@@ -19,11 +29,12 @@ export class Node {
         this.isClear = true;
     }
 
-    toggleState() {
+    // return if state was toogled
+    toggleState(): boolean {
         if (this._isStart || this._isStop) {
-            return this.isClear;
+            return false;
         }
         this.isClear = !this.isClear;
-        return this.isClear;
+        return true;
     }
 }

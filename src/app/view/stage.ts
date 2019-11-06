@@ -20,7 +20,7 @@ export class Stage {
         this._mouseStrategy = val;
     }
 
-    draw(): void {
+    draw(startCoord: number[], stopCoord: number[]): void {
         let width = this.numCols * this.nodeSize + 2 * Stage.STROKE_SIZE;
         let height = this.numRows * this.nodeSize + 2 * Stage.STROKE_SIZE;
 
@@ -53,23 +53,33 @@ export class Stage {
                         thisStage._mouseStrategy.onMouseout(coord[0], coord[1]);
                     }
                 });
-                this.rects[i][j]= rect;
+
+                if (startCoord[0] === i && startCoord[1] === j) {
+                    rect.attr({ fill: '#0f3' });
+                }
+                if (stopCoord[0] === i && stopCoord[1] === j) {
+                    rect.attr({ fill: '#00f' });
+                }
+
+                this.rects[i][j] = rect;
             }
         }
     }
 
-    /*animateNode2(rowId: number, colId: number, attr?: Object, info?: { ease?: string; duration?: number; delay?: number }) {
-        const rect = this.getRect(rowId, colId);
-        if (rect != null && attr != null) {
-            let runner: Runner;
-            if (info == null) {
-                runner = rect.animate();
-            } else {
-                runner = rect.animate(info);
+    clear(startCoord?: number[], stopCoord?: number[]) {
+        for (let i = 0; i < this.numCols; i++) {
+            for (let j = 0; j < this.numRows; j++) {
+                let rect = this.rects[i][j];
+                rect.attr({ fill: '#fff' });
+                if (startCoord != null && startCoord[0] === i && startCoord[1] === j) {
+                    rect.attr({ fill: '#0f3' });
+                }
+                if (stopCoord != null && stopCoord[0] === i && stopCoord[1] === j) {
+                    rect.attr({ fill: '#00f' });
+                }
             }
-            runner.attr(attr);
         }
-    }*/
+    }
 
     animateNode(rowId: number, colId: number, info?: { ease?: string; duration?: number; delay?: number }): Runner {
         const rect = this.getRect(rowId, colId);
@@ -82,20 +92,6 @@ export class Stage {
             }
         }
     }
-
-    /*animateNoteWithTransform(rowId: number, colId: number, trans: MatrixTransformParam, info?: { ease?: string; duration?: number; delay?: number }) {
-        const rect = this.getRect(rowId, colId);
-        if (rect != null && trans != null) {
-            rect.front();
-            let runner: Runner;
-            if (info == null) {
-                runner = rect.animate();
-            } else {
-                runner = rect.animate(info);
-            }
-            runner.transform(trans).reverse();
-        }
-    }*/
 
     private getRect(x: number, y: number) {
         if (x >= this.numCols || y >= this.numRows) {

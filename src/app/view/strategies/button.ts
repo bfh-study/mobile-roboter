@@ -1,11 +1,12 @@
 import { Interpreter } from 'xstate';
 
-import { Context, StateSchema, SMEvent, ReadyEvent, StartEvent, PauseEvent, StopEvent } from '../statemachine';
+import { Context, StateSchema, SMEvent, ReadyEvent, StartEvent, PauseEvent, StopEvent, ShuffleEvent } from '../statemachine';
 import { ControlPanel, ControlPanelButtons } from '../panel';
 
 export interface ButtonStrategy {
     onStartButtonClick(): void;
     onPauseButtonClick(): void;
+    onShuffleButtonClick(): void;
 }
 
 class BaseButtonState {
@@ -17,10 +18,15 @@ export class ReadyButtonState extends BaseButtonState implements ButtonStrategy 
     onStartButtonClick(): void {
         this.panel.changeText(ControlPanelButtons.START, "Stop");
         this.panel.toggleButton(ControlPanelButtons.PAUSE);
+        this.panel.toggleButton(ControlPanelButtons.SHUFFLE);
         this.interpreter.send(new StartEvent());
     }
 
     onPauseButtonClick(): void {}
+
+    onShuffleButtonClick(): void {
+        this.interpreter.send(new ShuffleEvent());
+    };
 }
 
 export class StartedButtonState extends BaseButtonState implements ButtonStrategy {
@@ -33,9 +39,12 @@ export class StartedButtonState extends BaseButtonState implements ButtonStrateg
     }
 
     onPauseButtonClick(): void {
+        console.log("pause");
         this.panel.changeText(ControlPanelButtons.PAUSE, "Paused");
         this.interpreter.send(new PauseEvent());
     }
+
+    onShuffleButtonClick(): void {};
 }
 
 export class PausedButtonState extends StartedButtonState implements ButtonStrategy {
@@ -44,12 +53,17 @@ export class PausedButtonState extends StartedButtonState implements ButtonStrat
         this.panel.changeText(ControlPanelButtons.PAUSE, "Pause");
         this.interpreter.send(new StartEvent());
     }
+
+    onShuffleButtonClick(): void {};
 }
 
 export class FinishedButtonState extends ReadyButtonState implements ButtonStrategy {
 
     onStartButtonClick(): void {
         this.panel.changeText(ControlPanelButtons.START, "Start");
+        this.panel.toggleButton(ControlPanelButtons.SHUFFLE);
         this.interpreter.send(new ReadyEvent());
     }
+
+    onShuffleButtonClick(): void {};
 }

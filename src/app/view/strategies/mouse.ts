@@ -19,12 +19,15 @@ export class NoActionState extends BaseMouseState implements MouseStrategy {
 
 export class EditMouseState extends NoActionState {
     onMousedown(posX: number, posY: number): void {
-        let isClear = this.grid.getNodeAt(posX, posY).toggleState();
+        let node = this.grid.getNodeAt(posX, posY);
 
-        if (isClear) {
-            this.stage.animateNode(posX, posY, {duration: 10, ease: '-'}).css({ fill: '#fff' });
-        } else {
-            this.stage.animateNode(posX, posY, {duration: 10, ease: '-'}).css({ fill: '#f03' });
+        if (node.toggleState()) {
+            // attention points to the new state!
+            if (node.isClear) {
+                this.stage.animateNode(posX, posY, {duration: 10, ease: '-'}).attr({ fill: '#fff' });
+            } else {
+                this.stage.animateNode(posX, posY, {duration: 10, ease: '-'}).attr({ fill: '#f03' });   
+            }
         }
         
         this.stage.animateNode(posX, posY)

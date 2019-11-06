@@ -2,7 +2,8 @@ import { ButtonStrategy } from './strategies/button';
 
 export enum ControlPanelButtons {
     START = 'start',
-    PAUSE = 'pause'
+    PAUSE = 'pause',
+    SHUFFLE = 'shuffle'
 }
 
 export type ControlPanelElements = ControlPanelButtons;
@@ -11,6 +12,7 @@ export class ControlPanel {
 
     private startStopButton: HTMLButtonElement;
     private pauseButton: HTMLButtonElement;
+    private shuffleButton: HTMLButtonElement;
 
     private _buttonStrategy: ButtonStrategy
 
@@ -28,6 +30,12 @@ export class ControlPanel {
             }
         }.bind(this));
         this.pauseButton.disabled = true;
+        this.shuffleButton = <HTMLButtonElement> document.getElementById(ControlPanelButtons.SHUFFLE);
+        this.shuffleButton.addEventListener('click', function (el: HTMLButtonElement, ev: MouseEvent) {
+            if (this._buttonStrategy != null) {
+                this._buttonStrategy.onShuffleButtonClick();
+            }
+        }.bind(this));
     }
 
     set buttonStrategy(val: ButtonStrategy) {
@@ -49,6 +57,8 @@ export class ControlPanel {
                 return this.startStopButton;
             case ControlPanelButtons.PAUSE:
                 return this.pauseButton;
+            case ControlPanelButtons.SHUFFLE:
+                    return this.shuffleButton;
             default:
                 return new HTMLButtonElement();
         }

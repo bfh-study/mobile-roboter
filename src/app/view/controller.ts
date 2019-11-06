@@ -3,7 +3,7 @@ import { Machine, interpret, Interpreter } from 'xstate';
 import { Stage } from './stage';
 import { ControlPanel } from './panel';
 import { strgBtn, strgMouse } from './strategies';
-import { Context, StateSchema, SMEvent } from './statemachine';
+import { Context, StateSchema, SMEvent, ReadyEvent } from './statemachine';
 import { Grid } from '../util/grid';
 
 class Controller {
@@ -13,7 +13,7 @@ class Controller {
     private stage: Stage;
     private panel: ControlPanel;
 
-    constructor(numCols: number, numRows: number) {
+    constructor(private numCols: number, private numRows: number) {
         this.grid = new Grid(numCols, numRows);
         this.stage = new Stage(numCols, numRows);
         this.panel = new ControlPanel();
@@ -24,16 +24,18 @@ class Controller {
     }
 
     init(): void {
-        
+        let coords = this.generateRandomCoords();
         this.panel.init();
-        this.grid.init();
-        this.stage.draw();
-        this._interpreter.send('READY');
+        this.grid.init(coords[0], coords[1]);
+        this.stage.draw(coords[0], coords[1]);
+        this._interpreter.send(new ReadyEvent());
     }
 
-    ready(): void {
-        this.panel.buttonStrategy = new strgBtn.ReadyButtonState(this._interpreter, this.panel);
-        this.stage.mouseStrategy = new strgMouse.EditMouseState(this.stage, this.grid);
+    ready(event: SMEvent): void {
+        if (event instanceof ReadyEvent && !event.shuffled) {
+            this.panel.buttonStrategy = new strgBtn.ReadyButtonState(this._interpreter, this.panel);
+            this.stage.mouseStrategy = new strgMouse.EditMouseState(this.stage, this.grid);
+        }
     }
 
     start(): void {
@@ -47,6 +49,26 @@ class Controller {
 
     finish(): void {
         this.panel.buttonStrategy = new strgBtn.FinishedButtonState(this._interpreter, this.panel);
+    }
+
+    shuffle(): void {
+        let coords = this.generateRandomCoords();
+        this.stage.clear(coords[0], coords[1]);
+        this.grid.clear(coords[0], coords[1]);
+
+        let readyEvent = new ReadyEvent();
+        readyEvent.shuffled = true;
+        this._interpreter.send(readyEvent);
+    }
+
+    private generateRandomCoords(): number[][] {
+        let generate = function(): number[] {return [Math.round(Math.random() * (this.numCols - 1)), Math.round(Math.random() * (this.numRows - 1))]}.bind(this);
+        let startCoord = generate();
+        let stopCoord = generate();
+        while(startCoord[0] === stopCoord[0] && startCoord[1] === stopCoord[1]) {
+            stopCoord = generate();
+        }
+        return [startCoord, stopCoord];
     }
 }
 
@@ -69,7 +91,8 @@ export function createStateMachine(numCols: number, numRows: number): Interprete
                     type: 'atomic',
                     onEntry: ['ready'],
                     on: {
-                        START: 'started'
+                        START: 'started',
+                        SHUFFLE: 'shuffled'
                     }
                 },
                 started: {
@@ -94,6 +117,13 @@ export function createStateMachine(numCols: number, numRows: number): Interprete
                     on: {
                         READY: 'ready',
                     }
+                },
+                shuffled: {
+                    type: 'atomic',
+                    onEntry: ['shuffle'],
+                    on: {
+                        READY: 'ready',
+                    }
                 }
             }
         },
@@ -103,7 +133,7 @@ export function createStateMachine(numCols: number, numRows: number): Interprete
                     context.init();
                 },
                 ready: (context, event) => {
-                    context.ready();
+                    context.ready(event);
                 },
                 start: (context, event) => {
                     context.start();
@@ -113,6 +143,9 @@ export function createStateMachine(numCols: number, numRows: number): Interprete
                 },
                 finish: (context, event) => {
                     context.finish();
+                },
+                shuffle: (context, event) => {
+                    context.shuffle();
                 }
             }
         }

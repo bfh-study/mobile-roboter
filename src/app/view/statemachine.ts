@@ -1,9 +1,10 @@
 export interface Context {
     init(): void;
-    ready(): void;
+    ready(event: SMEvent): void;
     start(): void;
     pause(): void;
     finish(): void;
+    shuffle(): void;
 }
 
 export interface StateSchema {
@@ -13,23 +14,29 @@ export interface StateSchema {
         started: {};
         paused: {};
         finished: {};
+        shuffled: {};
     };
 }
 
 export class ReadyEvent {
-    type: string = 'READY'
+    type: string = 'READY';
+    shuffled: boolean = false;
 }
 
 export class StartEvent {
-    type: string = 'START'
+    type: string = 'START';
 }
 
 export class PauseEvent {
-    type: string = 'PAUSE'
+    type: string = 'PAUSE';
 }
 
 export class StopEvent {
-    type: string = 'STOP'
+    type: string = 'STOP';
+}
+
+export class ShuffleEvent {
+    type: string = 'SHUFFLE';
 }
 
 export type SMEvent =
@@ -37,4 +44,5 @@ export type SMEvent =
   | ReadyEvent
   | StartEvent
   | PauseEvent
-  | StopEvent;
+  | StopEvent
+  | ShuffleEvent;
