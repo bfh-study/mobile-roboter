@@ -6,6 +6,10 @@ export class BinaryHeap<T> {
         this.content = [];
     }
 
+    includes(n: T): boolean {
+        return this.content.includes(n);
+    }
+
     push(element: T) {
         this.content.push(element);
         this.bubbleUp(this.content.length - 1);

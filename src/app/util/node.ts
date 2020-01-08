@@ -5,6 +5,8 @@ export class Node {
     private _isStop: boolean;
     private _isClear: boolean;
 
+    lastNode: Node;
+
     set isStart(val: boolean) {
         this._isClear = false;
         this._isStart = val;
@@ -25,7 +27,15 @@ export class Node {
         return this._isClear;
     }
 
-    constructor(private x: number, private y: number) {
+    get xCoord(): number {
+        return this.x;
+    }
+
+    get yCoord(): number {
+        return this.y;
+    }
+
+    constructor(private x: number, private y: number, private startCoord: number[], private endCoord: number[]) {
         this.isClear = true;
     }
 
@@ -36,5 +46,21 @@ export class Node {
         }
         this.isClear = !this.isClear;
         return true;
+    }
+
+    getCosts(): number {
+        //return Math.abs(this.x - this.startCoord[0]) + Math.abs(this.y - this.startCoord[1])
+        if (this.isStart) {
+            return 1;
+        } else if (this.lastNode != null) {
+            return this.lastNode.getCosts() + 1;
+        }
+        throw new Error('no last node found');
+    }
+
+    getHeurristic(): number {
+        let dx = Math.abs(this.x - this.endCoord[0])
+        let dy = Math.abs(this.y - this.endCoord[1])
+        return 1 * Math.sqrt(dx * dx + dy * dy)
     }
 }

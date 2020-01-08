@@ -17,6 +17,15 @@ export interface PathFinder {
     pause(): void;
 }
 
-export class BasePathFinder {
+export class BasePathFinder implements AbstractWorker {
     constructor(protected grid: Grid) {}
+
+    onerror: (this: AbstractWorker, ev: ErrorEvent) => any;
+    addEventListener(type: any, listener: any, options?: any) {
+        throw new Error("Method not implemented.");
+    }
+
+    removeEventListener(type: any, listener: any, options?: any) {
+        throw new Error("Method not implemented.");
+    }
 }
