@@ -3,8 +3,11 @@ import { Machine, interpret, Interpreter } from 'xstate';
 import { Stage } from './stage';
 import { ControlPanel } from './panel';
 import { strgBtn, strgMouse } from './strategies';
-import { Context, StateSchema, SMEvent, ReadyEvent } from './statemachine';
+import { Context, StateSchema, SMEvent, ReadyEvent, StopEvent, StartEvent } from './statemachine';
 import { Grid } from '../util/grid';
+import { AStar } from '../pathfinder/astar';
+import { OperationEvents } from '../pathfinder/base';
+import { Node } from '../util/node';
 
 class Controller {
     private _interpreter: Interpreter<Context, StateSchema, SMEvent>;
@@ -12,6 +15,8 @@ class Controller {
     private grid: Grid;
     private stage: Stage;
     private panel: ControlPanel;
+
+    private algo: AStar
 
     constructor(private numCols: number, private numRows: number) {
         this.grid = new Grid(numCols, numRows);
@@ -32,33 +37,52 @@ class Controller {
     }
 
     ready(event: SMEvent): void {
+        console.log("ready event", event);
         if (event instanceof ReadyEvent && !event.shuffled) {
+            if (event.clear) {
+                this.shuffle(false);
+            }
             this.panel.buttonStrategy = new strgBtn.ReadyButtonState(this._interpreter, this.panel);
             this.stage.mouseStrategy = new strgMouse.EditMouseState(this.stage, this.grid);
+
+            this.algo = new AStar(this.grid);
+            this.algo.addEventListener(OperationEvents.OPEN_LIST, this.stage.nodeAddedToOpenList, this.stage);
+            this.algo.addEventListener(OperationEvents.CLOSE_LIST, this.stage.nodeAddedToCloseList, this.stage);
+            this.algo.addEventListener(OperationEvents.AFTER, this.algoEnd, this);
+        } 
+    }
+
+    start(event: SMEvent): void {
+        this.panel.buttonStrategy = new strgBtn.StartedButtonState(this._interpreter, this.panel);
+        this.stage.mouseStrategy = new strgMouse.NoActionState(this.stage, this.grid);
+
+        if (event instanceof StartEvent && event.paused) {
+            this.algo.pause();  
+        } else {
+            this.algo.start();
         }
     }
 
-    start(): void {
-        this.panel.buttonStrategy = new strgBtn.StartedButtonState(this._interpreter, this.panel);
-        this.stage.mouseStrategy = new strgMouse.NoActionState(this.stage, this.grid);
-    }
-
     pause(): void {
+        this.algo.pause();
         this.panel.buttonStrategy = new strgBtn.PausedButtonState(this._interpreter, this.panel);
     }
 
     finish(): void {
+        this.algo.pause();
         this.panel.buttonStrategy = new strgBtn.FinishedButtonState(this._interpreter, this.panel);
     }
 
-    shuffle(): void {
+    shuffle(event = true): void {
         let coords = this.generateRandomCoords();
         this.stage.clear(coords[0], coords[1]);
         this.grid.clear(coords[0], coords[1]);
-
-        let readyEvent = new ReadyEvent();
-        readyEvent.shuffled = true;
-        this._interpreter.send(readyEvent);
+        this.algo.updateGrid(this.grid);
+        if (event){
+            let readyEvent = new ReadyEvent();
+            readyEvent.shuffled = true;
+            this._interpreter.send(readyEvent);
+        }
     }
 
     private generateRandomCoords(): number[][] {
@@ -69,6 +93,11 @@ class Controller {
             stopCoord = generate();
         }
         return [startCoord, stopCoord];
+    }
+
+    private algoEnd(nodes: Node[]): void {
+        this.stage.drawPath(nodes);
+        this.panel.buttonStrategy.onStartButtonClick();
     }
 }
 
@@ -136,7 +165,7 @@ export function createStateMachine(numCols: number, numRows: number): Interprete
                     context.ready(event);
                 },
                 start: (context, event) => {
-                    context.start();
+                    context.start(event);
                 },
                 pause: (context, event) => {
                     context.pause();

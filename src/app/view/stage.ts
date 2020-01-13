@@ -1,6 +1,8 @@
-import { SVG, Rect, Runner, MatrixTransformParam } from '@svgdotjs/svg.js'
+import { SVG, Rect, Runner } from '@svgdotjs/svg.js'
 
 import { MouseStrategy } from './strategies/mouse';
+import { Node } from '../util';
+import { EventListener, AddToOpenListEvent, AddToCloseListEvent } from '../pathfinder/base'
 
 export class Stage {
     private static ROOT_ELEMENT_ID = "stage";
@@ -91,6 +93,29 @@ export class Stage {
                 return rect.animate(info);
             }
         }
+    }
+
+    drawPath(nodes: Node[]) {
+        for(let node of nodes) {
+            let rect = this.rects[node.xCoord][node.yCoord];
+            rect.front().attr({ fill: '#18f' });
+        }
+    }
+
+    nodeAddedToOpenList(node: Node): void {
+        if (node.isStart || node.isStop) {
+            return;
+        } 
+        let rect = this.rects[node.xCoord][node.yCoord];
+        rect.front().attr({ fill: '#abc' });
+    }
+
+    nodeAddedToCloseList(node: Node): void {
+        if (node.isStart || node.isStop) {
+            return;
+        } 
+        let rect = this.rects[node.xCoord][node.yCoord];
+        rect.front().attr({ fill: '#f00' });
     }
 
     private getRect(x: number, y: number) {

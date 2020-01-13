@@ -39,7 +39,6 @@ export class StartedButtonState extends BaseButtonState implements ButtonStrateg
     }
 
     onPauseButtonClick(): void {
-        console.log("pause");
         this.panel.changeText(ControlPanelButtons.PAUSE, "Paused");
         this.interpreter.send(new PauseEvent());
     }
@@ -51,7 +50,9 @@ export class PausedButtonState extends StartedButtonState implements ButtonStrat
 
     onPauseButtonClick(): void {
         this.panel.changeText(ControlPanelButtons.PAUSE, "Pause");
-        this.interpreter.send(new StartEvent());
+        let event = new StartEvent();
+        event.paused = true;
+        this.interpreter.send(event);
     }
 
     onShuffleButtonClick(): void {};
@@ -62,7 +63,9 @@ export class FinishedButtonState extends ReadyButtonState implements ButtonStrat
     onStartButtonClick(): void {
         this.panel.changeText(ControlPanelButtons.START, "Start");
         this.panel.toggleButton(ControlPanelButtons.SHUFFLE);
-        this.interpreter.send(new ReadyEvent());
+        let event = new ReadyEvent();
+        event.clear = true;
+        this.interpreter.send(event);
     }
 
     onShuffleButtonClick(): void {};

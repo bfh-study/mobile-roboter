@@ -16,11 +16,11 @@ export class Grid {
             for (let j = 0; j < this.height; j++) {
                 this.nodes[i][j] = new Node(i, j, startCoord, stopCoord);
                 if (startCoord[0] === i && startCoord[1] === j) {
-                    this.nodes[i][j].isStart = true;
+                    // this.nodes[i][j].isStart = true;
                     this.sNode = this.nodes[i][j]
                 }
                 if (stopCoord[0] === i && stopCoord[1] === j) {
-                    this.nodes[i][j].isStop = true;
+                    // this.nodes[i][j].isStop = true;
                     this.eNode = this.nodes[i][j]
                 }
             }
@@ -52,11 +52,14 @@ export class Grid {
             for (let j = 0; j < this.height; j++) {
                 let node = this.getNodeAt(i, j);
                 node.isClear = true;
+                node.lastNode = null;
                 if (startCoord != null && startCoord[0] === i && startCoord[1] === j) {
-                    node.isStart = true; 
+                    node.isStart = true;
+                    this.sNode = node;
                 }
                 if (stopCoord != null && stopCoord[0] === i && stopCoord[1] === j) {
                     node.isStop = true;
+                    this.eNode = node;
                 }
             }
         }

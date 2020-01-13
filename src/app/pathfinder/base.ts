@@ -1,18 +1,27 @@
 import { Grid, Node } from '../util';
-import { type } from 'os';
 
 export enum OperationEvents {
-    AFTER = 'after'
+    AFTER = 'after',
+    OPEN_LIST = 'open',
+    CLOSE_LIST = 'close'
 }
 
 export interface AfterOperationEvent {
+    (nodes: Node[]): void;
+}
+
+export interface AddToOpenListEvent {
     (node: Node): void;
 }
 
-export type EventListener = AfterOperationEvent;
+export interface AddToCloseListEvent {
+    (node: Node): void;
+}
+
+export type EventListener = AfterOperationEvent | AddToOpenListEvent | AddToCloseListEvent;
 
 export interface PathFinder {
-    addEventListener(event: OperationEvents, listener: EventListener): void;
+    addEventListener(event: OperationEvents, listener: EventListener, bind: any): void;
     start(): void;
     pause(): void;
 }

@@ -10,6 +10,10 @@ export class BinaryHeap<T> {
         return this.content.includes(n);
     }
 
+    remove(n: T): void {
+        delete this.content[this.content.indexOf(n)];
+    }
+
     push(element: T) {
         this.content.push(element);
         this.bubbleUp(this.content.length - 1);

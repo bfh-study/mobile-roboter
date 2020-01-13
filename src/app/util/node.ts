@@ -4,6 +4,7 @@ export class Node {
     private _isStart: boolean;
     private _isStop: boolean;
     private _isClear: boolean;
+    private _isWall: boolean;
 
     lastNode: Node;
 
@@ -12,19 +13,32 @@ export class Node {
         this._isStart = val;
     }
 
+    get isStart(): boolean {
+        return this._isStart;
+    }
+
     set isStop(val: boolean) {
         this._isClear = false;
         this._isStop = val;
     }
 
+    get isStop(): boolean {
+        return this._isStop;
+    }
+
     set isClear(val: boolean) {
         this._isClear = val;
+        this._isWall = !val;
         this._isStart = false;
         this._isStop = false;
     }
 
     get isClear() {
         return this._isClear;
+    }
+
+    get isWall() {
+        return this._isWall;
     }
 
     get xCoord(): number {
@@ -37,6 +51,12 @@ export class Node {
 
     constructor(private x: number, private y: number, private startCoord: number[], private endCoord: number[]) {
         this.isClear = true;
+        if (x == startCoord[0] && y == startCoord[1]) {
+            this.isStart = true;
+        } else if (x == endCoord[0] && y == endCoord[1]) {
+            this.isStop = true;
+        }
+        this._isWall = false;
     }
 
     // return if state was toogled
