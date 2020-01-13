@@ -69,14 +69,14 @@ class Controller {
     }
 
     finish(): void {
-        this.algo.pause();
+        this.algo.finish();
         this.panel.buttonStrategy = new strgBtn.FinishedButtonState(this._interpreter, this.panel);
     }
 
     shuffle(event = true): void {
         let coords = this.generateRandomCoords();
         this.stage.clear(coords[0], coords[1]);
-        this.grid.clear(coords[0], coords[1]);
+        this.grid.init(coords[0], coords[1]);
         this.algo.updateGrid(this.grid);
         if (event){
             let readyEvent = new ReadyEvent();
@@ -97,7 +97,7 @@ class Controller {
 
     private algoEnd(nodes: Node[]): void {
         this.stage.drawPath(nodes);
-        this.panel.buttonStrategy.onStartButtonClick();
+        this.panel.startButton.click();
     }
 }
 

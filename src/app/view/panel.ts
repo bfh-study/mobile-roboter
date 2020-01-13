@@ -51,6 +51,10 @@ export class ControlPanel {
         button.disabled = !button.disabled;
     }
 
+    get startButton(): HTMLButtonElement {
+        return this.startStopButton;
+    }
+
     private getButton(btn: ControlPanelButtons): HTMLButtonElement {
         switch (btn) {
             case ControlPanelButtons.START:

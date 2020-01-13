@@ -99,6 +99,10 @@ export class AStar extends BasePathFinder implements PathFinder {
         }
     }
 
+    finish(): void {
+        this.run = false;
+    }
+
     updateGrid(grid: Grid) {
         this.grid = grid;
     }

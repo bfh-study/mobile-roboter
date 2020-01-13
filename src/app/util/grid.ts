@@ -46,22 +46,4 @@ export class Grid {
     get columnCount(): number {
         return this.width;
     }
-
-    clear(startCoord?: number[], stopCoord?: number[]) {
-        for (let i = 0; i < this.width; i++) {
-            for (let j = 0; j < this.height; j++) {
-                let node = this.getNodeAt(i, j);
-                node.isClear = true;
-                node.lastNode = null;
-                if (startCoord != null && startCoord[0] === i && startCoord[1] === j) {
-                    node.isStart = true;
-                    this.sNode = node;
-                }
-                if (stopCoord != null && stopCoord[0] === i && stopCoord[1] === j) {
-                    node.isStop = true;
-                    this.eNode = node;
-                }
-            }
-        }
-    }
 }
