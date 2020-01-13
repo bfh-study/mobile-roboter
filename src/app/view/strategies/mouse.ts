@@ -26,7 +26,7 @@ export class EditMouseState extends NoActionState {
             if (node.isClear) {
                 this.stage.animateNode(posX, posY, {duration: 10, ease: '-'}).attr({ fill: '#fff' });
             } else {
-                this.stage.animateNode(posX, posY, {duration: 10, ease: '-'}).attr({ fill: '#f03' });   
+                this.stage.animateNode(posX, posY, {duration: 10, ease: '-'}).attr({ fill: '#c3c3c3' });   
             }
         }
         

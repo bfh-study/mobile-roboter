@@ -57,10 +57,10 @@ export class Stage {
                 });
 
                 if (startCoord[0] === i && startCoord[1] === j) {
-                    rect.attr({ fill: '#0f3' });
+                    rect.attr({ fill: '#00d33b' });
                 }
                 if (stopCoord[0] === i && stopCoord[1] === j) {
-                    rect.attr({ fill: '#00f' });
+                    rect.attr({ fill: '#3d42ce' });
                 }
 
                 this.rects[i][j] = rect;
@@ -74,10 +74,10 @@ export class Stage {
                 let rect = this.rects[i][j];
                 rect.attr({ fill: '#fff' });
                 if (startCoord != null && startCoord[0] === i && startCoord[1] === j) {
-                    rect.attr({ fill: '#0f3' });
+                    rect.attr({ fill: '#00d33b' });
                 }
                 if (stopCoord != null && stopCoord[0] === i && stopCoord[1] === j) {
-                    rect.attr({ fill: '#00f' });
+                    rect.attr({ fill: '#3d42ce' });
                 }
             }
         }
@@ -98,7 +98,7 @@ export class Stage {
     drawPath(nodes: Node[]) {
         for(let node of nodes) {
             let rect = this.rects[node.xCoord][node.yCoord];
-            rect.front().attr({ fill: '#18f' });
+            rect.front().attr({ fill: '#ef1616' });
         }
     }
 
@@ -107,7 +107,7 @@ export class Stage {
             return;
         } 
         let rect = this.rects[node.xCoord][node.yCoord];
-        rect.front().attr({ fill: '#abc' });
+        rect.front().attr({ fill: '#ffcd00' });
     }
 
     nodeAddedToCloseList(node: Node): void {
@@ -115,7 +115,7 @@ export class Stage {
             return;
         } 
         let rect = this.rects[node.xCoord][node.yCoord];
-        rect.front().attr({ fill: '#f00' });
+        rect.front().attr({ fill: '#fffa82' });
     }
 
     private getRect(x: number, y: number) {
